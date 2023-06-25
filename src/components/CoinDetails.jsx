@@ -1,5 +1,5 @@
-import { Box, Container, HStack, VStack ,Radio, RadioGroup, Text, Image, Stat, StatLabel, StatNumber, StatHelpText, StatArrow, Badge } from '@chakra-ui/react';
-import {React,useState,useEffect, } from 'react'
+import { Box, Container, HStack, VStack ,Radio, RadioGroup, Text, Image, Stat, StatLabel, StatNumber, StatHelpText, StatArrow, Badge, Progress } from '@chakra-ui/react';
+import {React,useState,useEffect} from 'react'
 import Loader from './Loader';
 import { server } from "../index";
 import ErrorComponent from "./ErrorComponent";
@@ -60,7 +60,7 @@ currency === "inr" ? "₹" : currency === "eur" ? "€" : "$";
       
 <VStack spacing={"4"} p={"16"} alignItems={"flex-start"}  >
     <Text fontSize={"small"} alignSelf={"center"} opacity={0.7} >Last Updated on {Date(coin.market_data.last_updated).split("G")["0"]} </Text>
-    <Image src={coin.image.large} w={'16'} h={"16"} objectFit={"contain"} />
+    <Image src={coin.image.large} w={'40'} h={"40"} objectFit={"contain"} justifyContent={"space-evenly"} />
     <Stat>
       <StatLabel>{coin.name}</StatLabel>
       <StatNumber> {currencySymbol} {coin.market_data.current_price[currency]} </StatNumber>
@@ -70,6 +70,31 @@ currency === "inr" ? "₹" : currency === "eur" ? "€" : "$";
 
 <Badge fontSize={"2xl"} bgColor={"blackAlpha.700"} color={"white"} > {`#${coin.market_cap_rank}`} </Badge>
 
+<CustomBar 
+hight={`${currencySymbol}${coin.market_data.high_24h[currency]}`} 
+low={`${currencySymbol}${coin.market_data.low_24h[currency]}`} />
+
+<Box w={"full"} p={'4'} >
+<Box w={"full"} p="4">
+              <Item title={"Max Supply"} value={coin.market_data.max_supply} />
+              <Item
+                title={"Circulating Supply"}
+                value={coin.market_data.circulating_supply}
+              />
+              <Item
+                title={"Market Cap"}
+                value={`${currencySymbol}${coin.market_data.market_cap[currency]}`}
+              />
+              <Item
+                title={"All Time Low"}
+                value={`${currencySymbol}${coin.market_data.atl[currency]}`}
+              />
+              <Item
+                title={"All Time High"}
+                value={`${currencySymbol}${coin.market_data.ath[currency]}`}
+              />
+            </Box>
+</Box>
     </VStack> 
 
         </>
@@ -81,5 +106,26 @@ currency === "inr" ? "₹" : currency === "eur" ? "€" : "$";
     </Container>
   );
 };
+
+const Item = ({ title, value }) => (
+  <HStack justifyContent={"space-between"} w={"full"} my={"4"}>
+    <Text fontFamily={"Bebas Neue"} letterSpacing={"widest"}>
+      {title}
+    </Text>
+    <Text>{value}</Text>
+  </HStack>
+);
+
+
+const CustomBar = ({hight,low})=>(
+  <VStack w={"full"}  >
+    <Progress value={50} colorScheme={"teal"} w={"full"} />
+    <HStack justifyContent={"space-between"} w={"full"} >
+     <Badge children={low} colorScheme={"red"} />
+     <Text fontSize={"sm"}  >24H Range</Text>
+     <Badge children={hight} colorScheme={"green"} />
+    </HStack>
+  </VStack>
+)
 
 export default CoinDetails;
