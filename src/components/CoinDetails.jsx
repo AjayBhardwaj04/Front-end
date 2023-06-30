@@ -106,7 +106,6 @@ low={`${currencySymbol}${coin.market_data.low_24h[currency]}`} />
     </Container>
   );
 };
-
 const Item = ({ title, value }) => (
   <HStack justifyContent={"space-between"} w={"full"} my={"4"}>
     <Text fontFamily={"Bebas Neue"} letterSpacing={"widest"}>
@@ -115,6 +114,7 @@ const Item = ({ title, value }) => (
     <Text>{value}</Text>
   </HStack>
 );
+
 
 
 const CustomBar = ({hight,low})=>(
