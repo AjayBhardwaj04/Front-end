@@ -5,6 +5,7 @@ import { server } from "../index";
 import ErrorComponent from "./ErrorComponent";
 import {useParams} from "react-router-dom"
 import axios from 'axios';
+import Chart from './Chart';
 
 const CoinDetails = () => {
 
@@ -12,6 +13,8 @@ const CoinDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
     const [currency, setCurrency] = useState("inr");
+    const [days, setDays] = useState("24h");
+    const [chartArray, setChartArray] = useState([]);
 
     const currencySymbol =
 currency === "inr" ? "₹" : currency === "eur" ? "€" : "$";
@@ -25,8 +28,12 @@ currency === "inr" ? "₹" : currency === "eur" ? "€" : "$";
         const { data } = await axios.get(
           `${server}/coins/${params.id}`
         );
-        console.log(data);
+        const { data: chartData } = await axios.get(
+          `${server}/coins/${params.id}/market_chart?vs_currency=${currency}&days=${days}`
+        );
         setCoin(data);
+        setChartArray(chartData);
+        console.log(chartData);
         console.log(data);
         setLoading(false);
       } catch (error) {
@@ -35,7 +42,7 @@ currency === "inr" ? "₹" : currency === "eur" ? "€" : "$";
       }
     };
     fetchCoin();
-  }, [params.id]);
+  }, [params.id ,currency, days]);
   
   if (error) return <ErrorComponent message={"Error While Fetching Coin"} />;
 
@@ -46,7 +53,8 @@ currency === "inr" ? "₹" : currency === "eur" ? "€" : "$";
       loading ? (<Loader/>):(
         <>
         
-        <Box w={'full'} borderRadius={1}  > {coin.name}
+        <Box w={'full'} borderRadius={1}  >
+           <Chart arr={chartArray} currency={currencySymbol} />
  </Box>
 
 <RadioGroup value={currency} onChange={setCurrency} p={"8"} >
